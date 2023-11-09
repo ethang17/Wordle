@@ -1,10 +1,10 @@
 import random
 
-possibleGuessFile = open("U:\\pyProjects\\pyProjects\\combined_wordlist.txt", "r")
+possibleGuessFile = open("combined_wordlist.txt", "r")
 possibleGuessList = possibleGuessFile.readlines()
 possibleGuessFile.close()
 
-possibleAnswerFile = open("u:\\pyProjects\\pyProjects\\shuffled_real_wordles.txt", "r")
+possibleAnswerFile = open("shuffled_real_wordles.txt", "r")
 possibleAnswerList = possibleAnswerFile.readlines()
 possibleAnswerFile.close()
 
@@ -12,16 +12,30 @@ def inCombined(word):
     for entry in possibleGuessList:
         if word == entry.strip():
             return True
+        
+
 def score(guess, answer):
-    results=["","","","",""]
+    resultsG = scoreG(guess, answer)
+    print(resultsG)
+    resultsAll = scoreY(guess, resultsG)
+    return resultsAll
+def scoreG(guess, answer):
+    resultsG=["","","","",""]
     for x in range(5):
         if guess[x] == answer[x]:
-            results[x] = guess[x]+"(G)" 
-        elif guess[x] == answer[0] or guess[x]==answer[1]or guess[x]==answer[2]or guess[x]==answer[3]or guess[x]==answer[4]:
-            results[x] = guess[x] +"(Y)"
+            resultsG[x] = guess[x]+"(G)" 
         else:
-            results[x] = guess[x]
-    return results
+            resultsG[x] = guess[x]
+    return resultsG
+def scoreY(guess,resultsG):
+    resultsAll=["","","","",""]
+    for x in range(5):
+        if guess[x] == resultsG[0] or guess[x]==resultsG[1]or guess[x]==resultsG[2]or guess[x]==resultsG[3]or guess[x]==resultsG[4]:
+            resultsAll[x] = guess[x] +"(Y)"
+        else:
+            resultsAll[x] = resultsG[x]
+    return resultsAll
+
 
 
 def getAnswer():
