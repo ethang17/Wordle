@@ -84,7 +84,6 @@ def checkWin(currentGuessResult):
         found = x.find("(G)")
         if found > 0:
             foundLetters +=1
-    print(foundLetters)
     if foundLetters >=5:
         return True
     else:
