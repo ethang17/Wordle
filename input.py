@@ -107,7 +107,7 @@ if __name__ == "__main__":
                 print("Error: Your guess should be five letters.")
             elif not typed.isalpha():
                 print("Error: Your guess should only include letters.")
-            elif not inCombined(typed):
+            elif not inCombined(typed.lower()):
                 print("Error: Your guess is not in the word list.")
             else:
                 guessed = typed.upper()
@@ -115,4 +115,5 @@ if __name__ == "__main__":
         guessed=""
         win = checkWin(currentGuessResult)
         guessList.append(currentGuessResult)
-        print(guessList)
+        for x in guessList:
+            print(x)
