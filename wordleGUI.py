@@ -92,6 +92,11 @@ if __name__ == "__main__":
     firstFrameLabel = TK.Label(firstFrame, image = renderFrame1, border=0)
     firstFrameLabel.pack()
     firstFrame.pack()
+    #Guess Letter Labels
+    l11 = TK.Canvas(root, height= 68, width = 68, bg = "#4d4d4d", highlightthickness=0)
+    l11.create_text(33, 37, text="W", fill="#FFF", font=('CourierNew 40 bold'))
+
+    l11.place(x=56, y = 195)
 
 #Second Guess Line
     secondFrame = TK.Frame(root, border=0)
