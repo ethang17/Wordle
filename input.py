@@ -15,32 +15,34 @@ def inCombined(word):
         
 
 def score(guess, answer):
-    resultsG = scoreG(guess, answer)
-    print(resultsG)
-    print("G^")
-    resultsY = scoreY(guess, answer)
-    resultsYNoMult = removeMultiples(answer, resultsY)
-    resultsAll = merge(resultsG, resultsYNoMult, guess)
+    answerList = list(answer)
+    resultsG = scoreG(guess, answerList)[0]
+    answersList = scoreG(guess, answerList)[1]
+    resultsY = scoreY(guess, answersList)
+    resultsAll = merge(resultsG, resultsY, guess)
     return resultsAll
+
 
 def scoreG(guess, answer):
     resultsG=["","","","",""]
     for x in range(5):
         if guess[x] == answer[x]:
             resultsG[x] = guess[x]+"(G)" 
+            answer[x] = ""
         else:
             resultsG[x] = guess[x]
-    return resultsG
+    return [resultsG, answer]
 
 def scoreY(guess,answer):
     resultsY=["","","","",""]
     for x in range(5):
         if guess[x] == answer[0] or guess[x]==answer[1]or guess[x]==answer[2]or guess[x]==answer[3]or guess[x]==answer[4]:
             resultsY[x] = guess[x] +"(Y)"
+            answer[x] = ""
         else:
             resultsY[x] = guess[x]
     return resultsY
-
+'''
 def removeMultiples(answer, resultsY):
     for i in range(5):
         currentLetter = answer[i]
@@ -59,7 +61,7 @@ def removeMultiples(answer, resultsY):
                     resultsY[k] = currentLetter
         print(resultsY)
     return resultsY
-
+'''
 def merge(g, y, guess):
     results = ["","","","",""]
     for i in range(5):
@@ -71,30 +73,46 @@ def merge(g, y, guess):
             results[i] = guess[i]
     return results
 
-
-
 def getAnswer():
     answerIndex = random.randint(0, len(possibleAnswerList))
     answer = possibleAnswerList[answerIndex].strip()
     return answer
 
+def checkWin(currentGuessResult):
+    foundLetters = 0
+    for x in currentGuessResult:
+        found = x.find("(G)")
+        if found > 0:
+            foundLetters +=1
+    if foundLetters >=5:
+        return True
+    else:
+        return False
+
+
+
 if __name__ == "__main__":
-    answer = getAnswer()
+    answer = getAnswer().upper()
     print(answer)
     guessed = ""
     guessList=[]
-
+    win = False
     print("Welcome to Wordle!\nWhat is your first guess?")
-    while guessed == "":
-        print("---")
-        typed = input()
-        if len(typed) != 5:
-            print("Error: Your guess should be five letters.")
-        elif not typed.isalpha():
-            print("Error: Your guess should only include letters.")
-        elif not inCombined(typed):
-            print("Error: Your guess is not in the word list.")
-        else:
-            guessed = typed
-    guessList.append(score(guessed, answer))
-    print(guessList)
+    while win == False:
+        while guessed == "":
+            print("---")
+            typed = input()
+            if len(typed) != 5:
+                print("Error: Your guess should be five letters.")
+            elif not typed.isalpha():
+                print("Error: Your guess should only include letters.")
+            elif not inCombined(typed.lower()):
+                print("Error: Your guess is not in the word list.")
+            else:
+                guessed = typed.upper()
+        currentGuessResult = score(guessed, answer)
+        guessed=""
+        win = checkWin(currentGuessResult)
+        guessList.append(currentGuessResult)
+        for x in guessList:
+            print(x)
