@@ -43,9 +43,13 @@ def scoreG(guess, answer):
 def scoreY(guess,answer):
     resultsY=["","","","",""]
     for x in range(5):
+        print(answer)
         if guess[x] == answer[0] or guess[x]==answer[1]or guess[x]==answer[2]or guess[x]==answer[3]or guess[x]==answer[4]:
             resultsY[x] = guess[x] +"(Y)"
-            answer[x] = ""
+            for y in range(len(answer)):
+                if answer[y] == guess[x]:
+                    answer[y] = ""
+                    break
         else:
             resultsY[x] = guess[x]
     return resultsY
@@ -61,6 +65,17 @@ def merge(g, y, guess):
             results[i] = guess[i]
     return results
 
+def checkWin(currentGuessResult):
+    foundLetters = 0
+    for x in currentGuessResult:
+        found = x.find("(G)")
+        if found > 0:
+            foundLetters +=1
+    if foundLetters >=5:
+        winLabel.configure(text="WIN")
+        return True
+    else:
+        return False
 def getInput():
     global win
     global guessed
@@ -71,37 +86,49 @@ def getInput():
         return
     elif guessNumber>=5:
         print("lose")
+        winLabel.configure(text="LOSE")
         return
 
     setError("")
-    #while win == False:
-    print("---")
-    typed = guessEntry.get()
-    print(guessEntry.get())
-    print("TYPED: "+typed)
-    if len(typed) != 5:
-        setError("Error: Your guess should be five letters.")
-        print("1")
-    elif not typed.isalpha():
-        setError("Error: Your guess should only include letters.")
-        print("2")
-    elif not inCombined(typed.lower()):
-        setError("Error: Your guess is not in the word list.")
-        print("3")
-    else:
-        guessed = typed.upper()
-        guessed = score(guessed, answer)
-        guessList.append(guessed)
-        displayList()
-    guessEntry.delete(0,"end" )
+    if win == False:
+        print("---")
+        typed = guessEntry.get()
+        print(guessEntry.get())
+        print("TYPED: "+typed)
+        if len(typed) != 5:
+            setError("Error: Your guess should be five letters.")
+            print("1")
+        elif not typed.isalpha():
+            setError("Error: Your guess should only include letters.")
+            print("2")
+        elif not inCombined(typed.lower()):
+            setError("Error: Your guess is not in the word list.")
+            print("3")
+        else:
+            guessed = typed.upper()
+            guessed = score(guessed, answer)
+            guessList.append(guessed)
+            win = checkWin(guessed)
+            displayList()
+            print(win)
+        guessEntry.delete(0,"end" )
+
     
 
 def displayList():
     global guessNumber
     global guessed
     global canvasList
+    
 
     for j in range(len(guessList[guessNumber])):
+        if guessed[j].find("(G)") >-1:
+            guessed[j] = guessed[j].replace("(G)", "")
+            canvasList[guessNumber][j].create_rectangle(0,0,68,68, fill = "#63B06C", outline = "#63B06C")
+        elif guessed[j].find("(Y)") >-1:
+            guessed[j] = guessed[j].replace("(Y)", "")
+            canvasList[guessNumber][j].create_rectangle(0,0,68,68, fill = "#D1CB5E", outline = "#D1CB5E")
+
         canvasList[guessNumber][j].create_text(33, 37, text=guessed[j], fill="#FFF", font=('CourierNew 40 bold'))
     guessNumber += 1
         
@@ -141,6 +168,7 @@ if __name__ == "__main__":
     root.geometry("500x800")
     root.title("Wordle Remake")
     root.configure(bg = "#4D4D4D", borderwidth=0)
+    root.resizable(False, False)
 
 #Banner
     load = Image.open("wordleBanner.jpeg")
@@ -282,7 +310,7 @@ if __name__ == "__main__":
     canvasList.append(fourthCanvas)
 
 #Fifth Guess Line
-    fifthFrame = TK.Frame(root, border=0)
+    fifthFrame = TK.Frame(root, border=0, bg = "#4d4d4d")
 
     fifthFrameLabel = TK.Label(secondFrame, image = renderFrame1, border=0)
     fifthFrameLabel.pack()
@@ -310,4 +338,7 @@ if __name__ == "__main__":
     fifthCanvas.append(l55)
 
     canvasList.append(fifthCanvas)
+#Win Note
+    winLabel = TK.Label(root, fg = "#FFFFFF", border = 0, font=("Times","14"), bg="#4d4d4d")
+    winLabel.pack()
     root.mainloop()
